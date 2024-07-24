@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game with Upgrades and Rebirths</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        #clickCount {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        #clickButton {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #clickButton:hover {
+            background-color: #0056b3;
+        }
+        #playerCount {
+            font-size: 18px;
+            margin: 20px 0;
+            color: #555;
+        }
+        .stats-menu, .upgrade-menu, .rebirth-menu {
+            text-align: left;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .stats-menu h3, .upgrade-menu h3, .rebirth-menu h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #333;
+        }
+        .stats-menu p, .upgrade-menu p, .rebirth-menu p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #666;
+        }
+        .upgrade-menu button, .rebirth-menu button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+        .upgrade-menu button:hover, .rebirth-menu button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="clickCount">Clicks: 0</div>
+        <button id="clickButton">Click me!</button>
+        <div id="playerCount">Players Online: 0</div>
+
+        <div class="stats-menu">
+            <h3>Game Stats</h3>
+            <p>Total Clicks: <span id="totalClicks">0</span></p>
+            <p>Upgrades Bought: <span id="upgradesBought">0</span></p>
+            <p>Rebirths: <span id="rebirths">0</span></p>
+        </div>
+
+        <div class="upgrade-menu">
+            <h3>Upgrade System</h3>
+            <p>Upgrade Cost: <span id="upgradeCost">10</span> Clicks</p>
+            <button id="buyUpgradeButton">Buy Upgrade</button>
+        </div>
+
+        <div class="rebirth-menu">
+            <h3>Rebirth System</h3>
+            <p>Rebirth Cost: <span id="rebirthCost">100</span> Clicks</p>
+            <button id="rebirthButton">Rebirth</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize game variables
+        let clickCount = 0;
+        let totalClicks = 0;
+        let upgradesBought = 0;
+        let rebirths = 0;
+        let playerCount = 0;
+        let clickValue = 1; // Value per click
+        let upgradeCost = 10;
+        let rebirthCost = 100;
+
+        // Get references to the elements
+        const clickCountElement = document.getElementById('clickCount');
+        const clickButton = document.getElementById('clickButton');
+        const playerCountElement = document.getElementById('playerCount');
+        const totalClicksElement = document.getElementById('totalClicks');
+        const upgradesBoughtElement = document.getElementById('upgradesBought');
+        const rebirthsElement = document.getElementById('rebirths');
+        const upgradeCostElement = document.getElementById('upgradeCost');
+        const rebirthCostElement = document.getElementById('rebirthCost');
+        const buyUpgradeButton = document.getElementById('buyUpgradeButton');
+        const rebirthButton = document.getElementById('rebirthButton');
+
+        // Function to update click count and stats
+        function updateClickCount() {
+            clickCount += clickValue;
+            totalClicks += clickValue;
+            clickCountElement.textContent = `Clicks: ${clickCount}`;
+            clickCountElement.classList.add('glow');
+            setTimeout(() => clickCountElement.classList.remove('glow'), 300);
+            totalClicksElement.textContent = totalClicks;
+            updateStats();
+        }
+
+        // Function to update stats
+        function updateStats() {
+            upgradesBoughtElement.textContent = upgradesBought;
+            rebirthsElement.textContent = rebirths;
+            upgradeCostElement.textContent = upgradeCost;
+            rebirthCostElement.textContent = rebirthCost;
+        }
+
+        // Function to handle upgrades
+        function buyUpgrade() {
+            if (clickCount >= upgradeCost) {
+                clickCount -= upgradeCost;
+                upgradesBought += 1;
+                clickValue += 1; // Increase click value
+                upgradeCost *= 2; // Double the cost for the next upgrade
+                updateClickCount();
+                updateStats();
+            } else {
+                alert('Not enough clicks for upgrade!');
+            }
+        }
+
+        // Function to handle rebirth
+        function rebirth() {
+            if (clickCount >= rebirthCost) {
+                clickCount = 0;
+                totalClicks = 0;
+                upgradesBought = 0;
+                clickValue = 1;
+                rebirths += 1;
+                upgradeCost = 10;
+                rebirthCost *= 2; // Double the cost for the next rebirth
+                updateClickCount();
+                updateStats();
+            } else {
+                alert('Not enough clicks for rebirth!');
+            }
+        }
+
+        // Function to update player count
+        function updatePlayerCount() {
+            playerCount = Math.floor(Math.random() * 100);
+            playerCountElement.textContent = `Players Online: ${playerCount}`;
+        }
+
+        // Add event listeners to buttons
+        clickButton.addEventListener('click', updateClickCount);
+        buyUpgradeButton.addEventListener('click', buyUpgrade);
+        rebirthButton.addEventListener('click', rebirth);
+
+        // Update player count periodically
+        setInterval(updatePlayerCount, 5000);
+
+        // Initial stats and player count
+        updateStats();
+        updatePlayerCount();
+    </script>
+</body>
+</html>
